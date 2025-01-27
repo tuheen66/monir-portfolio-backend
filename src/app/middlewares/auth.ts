@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { StatusCodes } from 'http-status-codes';
 import AppError from '../errors/AppError';
 import catchAsync from '../utils/catchAsync';
@@ -14,10 +16,16 @@ const auth = (...requiredRoles: TUserRole[]) => {
       throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
     }
 
-    const decoded = jwt.verify(
-      token,
-      config.jwt_access_secret as string,
-    ) as JwtPayload;
+    let decoded;
+    
+    try {
+      decoded = jwt.verify(
+        token,
+        config.jwt_access_secret as string,
+      ) as JwtPayload;
+    } catch (err) {
+      throw new AppError(StatusCodes.UNAUTHORIZED, 'Unauthorized');
+    }
 
     const { email, role } = decoded;
 
@@ -34,8 +42,8 @@ const auth = (...requiredRoles: TUserRole[]) => {
     }
 
     if (requiredRoles && !requiredRoles.includes(role)) {
-        throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
-      }
+      throw new AppError(StatusCodes.UNAUTHORIZED, 'You are not authorized');
+    }
     req.user = decoded as JwtPayload;
 
     next();

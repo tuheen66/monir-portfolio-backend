@@ -1,6 +1,8 @@
 import catchAsync from '../../utils/catchAsync';
-import { BicycleServices } from './bicycle.service';
 import sendResponse from '../../utils/sendResponse';
+
+import { BicycleServices } from './bicycle.service';
+
 import { StatusCodes } from 'http-status-codes';
 
 const createBicycle = catchAsync(async (req, res) => {
@@ -17,7 +19,7 @@ const createBicycle = catchAsync(async (req, res) => {
 
 const getAllBicycle = catchAsync(async (req, res) => {
   const result = await BicycleServices.getAllBicycleFromDB(req.query);
-  
+
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -37,36 +39,33 @@ const getSingleBicycle = catchAsync(async (req, res) => {
   });
 });
 
-const updateBicycle= catchAsync(async (req, res) => {
-    const id = req.params.productId;
-    const data = req.body;
-    const result = await BicycleServices.updateBicycleIntoDB(id, data);
-    sendResponse(res, {
-        statusCode: StatusCodes.OK,
-        success: true,
-        message: 'Bicycle updated successfully',
-        data: result,
-    });
+const updateBicycle = catchAsync(async (req, res) => {
+  const id = req.params.productId;
+  const data = req.body;
+  const result = await BicycleServices.updateBicycleIntoDB(id, data);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Bicycle updated successfully',
+    data: result,
+  });
+});
 
-})
-
-const deleteBicycle= catchAsync(async (req, res) => {
-    const id = req.params.productId;
-    const result = await BicycleServices.deleteBicycleFromDB(id);
-    sendResponse(res, {
-        statusCode: StatusCodes.OK,
-        success: true,
-        message: 'Bicycle deleted successfully',
-        data: result,
-    });
-
-})
-
+const deleteBicycle = catchAsync(async (req, res) => {
+  const id = req.params.productId;
+  const result = await BicycleServices.deleteBicycleFromDB(id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Bicycle deleted successfully',
+    data: result,
+  });
+});
 
 export const BicycleControllers = {
   createBicycle,
   getAllBicycle,
   getSingleBicycle,
   updateBicycle,
-  deleteBicycle
+  deleteBicycle,
 };
