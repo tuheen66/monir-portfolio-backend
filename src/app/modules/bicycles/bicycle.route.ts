@@ -5,11 +5,14 @@ import { USER_ROLE } from '../user/user.constant';
 
 const router = express.Router();
 
-router.post('/',auth(USER_ROLE.admin), BicycleControllers.createBicycle);
+router.post('/', auth(USER_ROLE.admin), BicycleControllers.createBicycle);
 
 router.get('/', BicycleControllers.getAllBicycle);
+
 router.get('/:productId', BicycleControllers.getSingleBicycle);
-router.put('/:productId', BicycleControllers.updateBicycle);
-router.delete('/:productId', BicycleControllers.deleteBicycle);
+
+router.put('/:productId',  auth(USER_ROLE.admin),BicycleControllers.updateBicycle);
+
+router.delete('/:productId', auth(USER_ROLE.admin), BicycleControllers.deleteBicycle);
 
 export const BicycleRoutes = router;

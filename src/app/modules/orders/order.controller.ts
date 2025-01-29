@@ -27,13 +27,24 @@ const getAllOrders = catchAsync(async (req, res) => {
   });
 });
 
+const getCustomerOwnOrder = catchAsync(async (req, res) => {
+  const email = req.params.email;
+  const result = await orderService.customerOwnOrder(email);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Customers Order fetched successfully',
+    data: result,
+  });
+});
+
 const getSingleOrder = catchAsync(async (req, res) => {
   const id = req.params.orderId;
   const result = await orderService.getSingleOrder(id);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'Order fetched successfully',
+    message: ' Orders fetched successfully',
     data: result,
   });
 });
@@ -64,6 +75,7 @@ const deleteOrder = catchAsync(async (req, res) => {
 export const OrderController = {
   createOrder,
   getAllOrders,
+  getCustomerOwnOrder,
   getSingleOrder,
   updateOrder,
   deleteOrder,

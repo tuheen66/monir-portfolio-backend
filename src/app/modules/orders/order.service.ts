@@ -11,6 +11,11 @@ const getAllOrders = async () => {
   return result;
 };
 
+const customerOwnOrder = async (email: string) => {
+  const result = await Order.find({email});
+  return result;
+};
+
 const getSingleOrder = async (id: string) => {
   const result = await Order.findById(id);
   return result;
@@ -21,15 +26,16 @@ const updateOrder = async (id: string, data: TOrder) => {
   return result;
 };
 
-const deleteOrder = async (id: string) => { 
-    const result = await Order.findByIdAndDelete(id);
-    return result;
-}   
+const deleteOrder = async (id: string) => {
+  const result = await Order.findByIdAndDelete(id);
+  return result;
+};
 
 export const orderService = {
   createOrder,
   getAllOrders,
+  customerOwnOrder,
   getSingleOrder,
   updateOrder,
-  deleteOrder
+  deleteOrder,
 };

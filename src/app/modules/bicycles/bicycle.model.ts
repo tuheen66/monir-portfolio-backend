@@ -10,6 +10,10 @@ const bicycleSchema = new Schema<TBicycle>(
       maxlength: [30, 'Name cannot exceed 30 characters'],
       trim: true,
     },
+    image: {
+      type: String,
+      required: true,
+    },
     brand: {
       type: String,
       required: [true, 'Brand is required'],
@@ -30,6 +34,9 @@ const bicycleSchema = new Schema<TBicycle>(
           "{VALUE} : The type of bicycle can only be of the followings : 'Mountain', 'Road', 'Hybrid', 'BMX', 'Electric' ",
       },
       required: [true, 'Type is required'],
+    },
+    model: {
+      type: String,
     },
     description: {
       type: String,
