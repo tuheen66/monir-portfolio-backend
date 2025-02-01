@@ -53,50 +53,93 @@ const login = async (payload: TLoginUser) => {
   return { accessToken, refreshToken };
 };
 
+// const changePassword = async (
+//   userData: JwtPayload,
+//   payload: { oldPassword: string; newPassword: string },
+// ) => {
+//   // checking if the user is exist
+//   // const user = await User.isUserExistsById(userData.id);
+//   const { email } = userData;
+
+//   const user = await User.findOne({email});
+//   const {userPassword}= userData
+
+//   if (!user) {
+//     throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');
+//   }
+
+//   // checking if the user is blocked
+
+//   if (user.isBlocked) {
+//     throw new AppError(StatusCodes.FORBIDDEN, 'This user is blocked ! !');
+//   }
+
+//   //checking if the password is correct
+
+//   const isPasswordMatched = async (oldPassword: string, userPassword: string) => {
+//     return await bcrypt.compare(oldPassword, userPassword);
+//   };
+
+//   if (!(await isPasswordMatched(payload.oldPassword, user.password))) {
+//     throw new AppError(StatusCodes.FORBIDDEN, 'Password do not matched');
+//   }
+
+//   //hash new password
+//   const newHashedPassword = await bcrypt.hash(
+//     payload.newPassword,
+//     Number(config.bcrypt_salt_rounds),
+//   );
+
+//   await User.findOneAndUpdate(
+//     {
+//       id: userData.userId,
+//       role: userData.role,
+//     },
+//     {
+//       password: newHashedPassword,
+//     },
+//   );
+
+//   return null;
+// };
+
 const changePassword = async (
   userData: JwtPayload,
-  payload: { oldPassword: string; newPassword: string },
+  payload: { oldPassword: string; newPassword: string }
 ) => {
-  // checking if the user is exist
-  // const user = await User.isUserExistsById(userData.id);
   const { email } = userData;
+
+  // Checking if the user exists
+  const user = await User.findOne({ email }).select('+password'); // Using lean() to improve performance
   
-
-  const user = await User.isUserExistsByEmail(email);
-
   if (!user) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');
+    throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found!');
   }
 
-  // checking if the user is blocked
-
+  // Checking if the user is blocked
   if (user.isBlocked) {
-    throw new AppError(StatusCodes.FORBIDDEN, 'This user is blocked ! !');
+    throw new AppError(StatusCodes.FORBIDDEN, 'This user is blocked!');
   }
 
-  //checking if the password is correct
+  // Checking if the old password is correct
+  const isPasswordMatched = await bcrypt.compare(payload.oldPassword, user.password);
+  if (!isPasswordMatched) {
+    throw new AppError(StatusCodes.FORBIDDEN, 'Incorrect old password!');
+  }
 
-  if (!(await User.isPasswordMatched(payload.oldPassword, user?.password)))
-    throw new AppError(StatusCodes.FORBIDDEN, 'Password do not matched');
-
-
-  //hash new password
+  // Hash the new password
   const newHashedPassword = await bcrypt.hash(
     payload.newPassword,
-    Number(config.bcrypt_salt_rounds),
+    Number(config.bcrypt_salt_rounds)
   );
 
+  // Update the password in the database
   await User.findOneAndUpdate(
-    {
-      id: userData.userId,
-      role: userData.role,
-    },
-    {
-      password: newHashedPassword,
-    },
+    { email }, // Finding user by email
+    { password: newHashedPassword }
   );
 
-  return null;
+  return { message: 'Password changed successfully!' };
 };
 
 const getAllUsers = async () => {
