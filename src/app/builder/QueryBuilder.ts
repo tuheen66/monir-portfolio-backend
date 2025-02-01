@@ -1,7 +1,7 @@
 import { FilterQuery, Query } from 'mongoose';
 
 interface QueryObject {
-    searchTerm?: string;
+    search?: string;
     [key: string]: unknown;
     minPrice?: number;
     maxPrice?: number;
@@ -21,14 +21,14 @@ class QueryBuilder<T> {
   }
 
   search(searchableFields: string[]) {
-    const searchTerm = this?.query?.searchTerm;
+    const search = this?.query?.search;
 
-    if (searchTerm) {
+    if (search) {
       this.modelQuery = this.modelQuery.find({
         $or: searchableFields.map(
           (field) =>
             ({
-              [field]: { $regex: searchTerm, $options: 'i' },
+              [field]: { $regex: search, $options: 'i' },
             }) as FilterQuery<T>,
         ),
       });
@@ -41,7 +41,7 @@ class QueryBuilder<T> {
     const queryObj:QueryObject = { ...this.query }; // copy
 
     // Filtering
-    const excludeFields = ['searchTerm', 'sort', 'limit', 'page', 'fields'];
+    const excludeFields = ['search', 'sort', 'limit', 'page', 'fields'];
 
     excludeFields.forEach((el) => delete queryObj[el]);
 

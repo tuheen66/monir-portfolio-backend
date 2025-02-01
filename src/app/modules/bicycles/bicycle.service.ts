@@ -13,7 +13,6 @@ const getAllBicycleFromDB = async (query: Record<string, unknown>) => {
     .search(bicycleSearchableFields)
     .filter()
     .sort()
-    .paginate()
     .fields();
 
   const result = await bicycleQuery.modelQuery;

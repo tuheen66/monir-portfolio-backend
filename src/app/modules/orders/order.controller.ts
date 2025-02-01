@@ -5,7 +5,6 @@ import { orderService } from './order.service';
 
 const createOrder = catchAsync(async (req, res) => {
   const order = req.body;
-
   const result = await orderService.createOrder(order);
 
   sendResponse(res, {
@@ -13,6 +12,20 @@ const createOrder = catchAsync(async (req, res) => {
     success: true,
     message: 'Bicycle created successfully',
     data: result,
+  });
+});
+
+const createPaymentIntent = catchAsync(async (req, res) => {
+  const { totalPrice } = req.body;
+  const clientSecret =
+    await orderService.createPaymentIntentService(totalPrice);
+
+ 
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Payment secret created successfully',
+    data: clientSecret,
   });
 });
 
@@ -61,6 +74,17 @@ const updateOrder = catchAsync(async (req, res) => {
   });
 });
 
+const getRevenue = catchAsync(async(req, res) => {
+     const totalRevenue = await orderService.calculateRevenue();
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: ' Revenue calculated successfully',
+      data: {totalRevenue} ,
+    });
+  
+});
+
 const deleteOrder = catchAsync(async (req, res) => {
   const id = req.params.orderId;
   const result = await orderService.deleteOrder(id);
@@ -74,9 +98,11 @@ const deleteOrder = catchAsync(async (req, res) => {
 
 export const OrderController = {
   createOrder,
+  createPaymentIntent,
   getAllOrders,
   getCustomerOwnOrder,
   getSingleOrder,
   updateOrder,
+  getRevenue,
   deleteOrder,
 };
