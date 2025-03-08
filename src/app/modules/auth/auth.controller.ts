@@ -40,25 +40,10 @@ const login = catchAsync(async (req, res) => {
   });
 });
 
-const changePassword = catchAsync(async (req, res) => {
-  const { ...passwordData } = req.body;
+const userProfile = catchAsync(async (req, res) => {
+  const token = req.headers.authorization;
 
-  if (!req.user) {
-    throw new Error('User not authenticated');
-  }
-  const result = await authServices.changePassword(req.user as JwtPayload, passwordData);
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: 'Password is updated successfully!',
-    data: result,
-  });
-});
-
-
-const personalProfile = catchAsync(async (req, res) => {
-  const email = req.params.email;
-  const result = await authServices.personalProfile(email);
+  const result = await authServices.userProfile(token);
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
@@ -94,8 +79,7 @@ const blockUser = catchAsync(async (req, res) => {
 export const AuthControllers = {
   register,
   login,
-  changePassword,
-  personalProfile,
+  userProfile,
   getAllUsers,
   blockUser,
 };

@@ -6,7 +6,7 @@ export type TUser = {
   name: string;
   email: string;
   password: string;
-  role: 'admin' | 'customer';
+  role: 'admin' | 'user';
   isBlocked: boolean;
 };
 

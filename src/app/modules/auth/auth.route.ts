@@ -6,6 +6,7 @@ import { AuthValidation } from './auth.validation';
 import auth from '../../middlewares/auth';
 import { USER_ROLE } from '../user/user.constant';
 
+
 const authRoute = Router();
 
 authRoute.post(
@@ -20,18 +21,13 @@ authRoute.post(
   AuthControllers.login,
 );
 
-authRoute.post(
-  '/change-password',
-  validateRequest(AuthValidation.changePasswordValidationSchema),
-  auth(USER_ROLE.admin, USER_ROLE.customer),AuthControllers.changePassword,
-);
 
 authRoute.get('/users', auth(USER_ROLE.admin), AuthControllers.getAllUsers);
 
 authRoute.get(
-  '/profile/:email',
-  auth(USER_ROLE.customer),
-  AuthControllers.personalProfile,
+  '/profile/:userId',
+  auth(USER_ROLE.user),
+  AuthControllers.userProfile
 );
 
 authRoute.patch(

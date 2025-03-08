@@ -1,3 +1,7 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { StatusCodes } from 'http-status-codes';
 import AppError from '../../errors/AppError';
 import { TUser } from '../user/user.interface';
@@ -20,10 +24,6 @@ const login = async (payload: TLoginUser) => {
     throw new AppError(StatusCodes.NOT_FOUND, 'User not found');
   }
 
-  if (user.isBlocked === true) {
-    throw new AppError(StatusCodes.FORBIDDEN, 'User is blocked');
-  }
-
   const isPasswordMatch = await bcrypt.compare(
     payload?.password,
     user?.password,
@@ -34,7 +34,9 @@ const login = async (payload: TLoginUser) => {
   }
 
   const jwtPayload = {
-    email: user?.email,
+    userId: user._id,
+    name: user.name as string,
+    email: user?.email as string,
     role: user?.role,
   };
 
@@ -53,103 +55,36 @@ const login = async (payload: TLoginUser) => {
   return { accessToken, refreshToken };
 };
 
-// const changePassword = async (
-//   userData: JwtPayload,
-//   payload: { oldPassword: string; newPassword: string },
-// ) => {
-//   // checking if the user is exist
-//   // const user = await User.isUserExistsById(userData.id);
-//   const { email } = userData;
-
-//   const user = await User.findOne({email});
-//   const {userPassword}= userData
-
-//   if (!user) {
-//     throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found !');
-//   }
-
-//   // checking if the user is blocked
-
-//   if (user.isBlocked) {
-//     throw new AppError(StatusCodes.FORBIDDEN, 'This user is blocked ! !');
-//   }
-
-//   //checking if the password is correct
-
-//   const isPasswordMatched = async (oldPassword: string, userPassword: string) => {
-//     return await bcrypt.compare(oldPassword, userPassword);
-//   };
-
-//   if (!(await isPasswordMatched(payload.oldPassword, user.password))) {
-//     throw new AppError(StatusCodes.FORBIDDEN, 'Password do not matched');
-//   }
-
-//   //hash new password
-//   const newHashedPassword = await bcrypt.hash(
-//     payload.newPassword,
-//     Number(config.bcrypt_salt_rounds),
-//   );
-
-//   await User.findOneAndUpdate(
-//     {
-//       id: userData.userId,
-//       role: userData.role,
-//     },
-//     {
-//       password: newHashedPassword,
-//     },
-//   );
-
-//   return null;
-// };
-
-const changePassword = async (
-  userData: JwtPayload,
-  payload: { oldPassword: string; newPassword: string }
-) => {
-  const { email } = userData;
-
-  // Checking if the user exists
-  const user = await User.findOne({ email }).select('+password'); // Using lean() to improve performance
-  
-  if (!user) {
-    throw new AppError(StatusCodes.NOT_FOUND, 'This user is not found!');
-  }
-
-  // Checking if the user is blocked
-  if (user.isBlocked) {
-    throw new AppError(StatusCodes.FORBIDDEN, 'This user is blocked!');
-  }
-
-  // Checking if the old password is correct
-  const isPasswordMatched = await bcrypt.compare(payload.oldPassword, user.password);
-  if (!isPasswordMatched) {
-    throw new AppError(StatusCodes.FORBIDDEN, 'Incorrect old password!');
-  }
-
-  // Hash the new password
-  const newHashedPassword = await bcrypt.hash(
-    payload.newPassword,
-    Number(config.bcrypt_salt_rounds)
-  );
-
-  // Update the password in the database
-  await User.findOneAndUpdate(
-    { email }, // Finding user by email
-    { password: newHashedPassword }
-  );
-
-  return { message: 'Password changed successfully!' };
-};
-
 const getAllUsers = async () => {
   const result = await User.find();
   return result;
 };
 
-const personalProfile = async (email: string) => {
-  const result = await User.find({ email });
-  return result;
+const userProfile = async (token: string | undefined) => {
+  try {
+    if (!token) {
+      throw new Error('Authentication failed: No token provided.');
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, config.jwt_access_secret as string);
+    } catch (err) {
+      throw new Error('Authentication failed: Invalid token.');
+    }
+
+    if (!decoded || typeof decoded !== 'object' || !decoded.userId) {
+      throw new Error('Authentication failed: Missing userId in token.');
+    }
+
+    const userId = decoded.userId;
+
+    const result = await User.findById(userId);
+    return result;
+  } catch (error: any) {
+    console.error('Error creating order:', error.message);
+    throw new Error('Order creation failed. Please try again.');
+  }
 };
 
 const blockUser = async (id: string, token: string) => {
@@ -175,8 +110,7 @@ const blockUser = async (id: string, token: string) => {
 export const authServices = {
   register,
   login,
-  changePassword,
-  personalProfile,
+  userProfile,
   getAllUsers,
   blockUser,
 };
