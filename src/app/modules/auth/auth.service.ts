@@ -87,6 +87,11 @@ const userProfile = async (token: string | undefined) => {
   }
 };
 
+const updateUser = async (_id: string, user: TUser) => {
+  const result = await User.findByIdAndUpdate(_id, user, { new: true });
+  return result;
+};
+
 const blockUser = async (id: string, token: string) => {
   const decoded = jwt.verify(
     token,
@@ -112,5 +117,6 @@ export const authServices = {
   login,
   userProfile,
   getAllUsers,
+  updateUser,
   blockUser,
 };

@@ -6,6 +6,7 @@ import sendResponse from '../../utils/sendResponse';
 import { authServices } from './auth.service';
 import config from '../../config';
 import { JwtPayload } from 'jsonwebtoken';
+import { OrderService } from '../order/order.service';
 
 const register = catchAsync(async (req, res) => {
   const result = await authServices.register(req.body);
@@ -52,6 +53,19 @@ const userProfile = catchAsync(async (req, res) => {
   });
 });
 
+const updateUser = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const user = req.body;
+  const result = await authServices.updateUser(id, user);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Profile updated successfully',
+    data: result,
+  });
+});
+
 const getAllUsers = catchAsync(async (req, res) => {
   const result = await authServices.getAllUsers();
 
@@ -81,5 +95,6 @@ export const AuthControllers = {
   login,
   userProfile,
   getAllUsers,
+  updateUser,
   blockUser,
 };

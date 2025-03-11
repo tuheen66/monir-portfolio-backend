@@ -39,6 +39,43 @@ const createPaymentIntent = catchAsync(async (req, res) => {
   });
 });
 
+export const getAllOrders = catchAsync(async (req, res) => {
+  const result = await OrderService.getAllOrders();
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Orders retrieved successfully',
+    data: result,
+  });
+});
+
+const getSingleOrder = catchAsync(async (req, res) => {
+  const id = req.params.id;
+  const result = await OrderService.getSingleOrder(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'Medicine fetched successfully',
+    data: result,
+  });
+});
+
+const updateOrderStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const result = await OrderService.updateOrderStatus(id, status);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'order status updated successfully',
+    data: result,
+  });
+});
+
 export const getUserOwnOrders = catchAsync(async (req, res) => {
   const token = req.headers.authorization;
   const email = req.params.email;
@@ -61,8 +98,26 @@ export const getUserOwnOrders = catchAsync(async (req, res) => {
   });
 });
 
+
+const getSingleUserOrders=catchAsync(async(req, res)=>{
+
+  const user = req.params.user
+  const result = await OrderService.getSingleUserOrders(user)
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: ' Users orders fetched successfully',
+    data: result,
+  });
+})
+
 export const OrderController = {
   createOrder,
   createPaymentIntent,
+  getAllOrders,
+  getSingleOrder,
+  updateOrderStatus,
   getUserOwnOrders,
+  getSingleUserOrders
 };

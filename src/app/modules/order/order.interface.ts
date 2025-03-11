@@ -1,12 +1,12 @@
 import { Types, Document } from 'mongoose';
 
-
 export interface IOrderProduct {
   product: Types.ObjectId;
+  name: string;
+  image: string;
   quantity: number;
   unitPrice: number;
-  prescriptionRequired?:string
-  
+  prescriptionRequired?: string;
 }
 
 export interface IOrder extends Document {
@@ -16,8 +16,7 @@ export interface IOrder extends Document {
   deliveryCharge: number;
   finalAmount: number;
   status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered';
-  shippingAddress: string; 
-    createdAt?: Date;
+  shippingAddress: string;
+  createdAt?: Date;
   updatedAt?: Date;
-  
 }

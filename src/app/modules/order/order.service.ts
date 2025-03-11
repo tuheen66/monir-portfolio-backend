@@ -90,7 +90,29 @@ const createPaymentIntentService = async (totalPrice: number) => {
   };
 };
 
-const getAllOrders = async () => {};
+const getAllOrders = async () => {
+  const result = await Order.find();
+  return result;
+};
+
+const getSingleOrder = async (_id: string) => {
+  const result = await Order.findById(_id);
+  return result;
+};
+
+const updateOrderStatus = async (orderId: string, newStatus: string) => {
+  try {
+    const result = await Order.findByIdAndUpdate(
+      orderId,
+      { status: newStatus },
+      { new: true }, // Returns the updated order
+    );
+
+    return result;
+  } catch (error: any) {
+    throw new Error(error.message);
+  }
+};
 
 const userOwnOrder = async (token: string, email: string) => {
   try {
@@ -120,9 +142,17 @@ const userOwnOrder = async (token: string, email: string) => {
   }
 };
 
+const getSingleUserOrders = async (user: string) => {
+  const result = await Order.find({ user });
+  return result;
+};
+
 export const OrderService = {
   createOrder,
   createPaymentIntentService,
   getAllOrders,
+  getSingleOrder,
+  updateOrderStatus,
   userOwnOrder,
+  getSingleUserOrders
 };

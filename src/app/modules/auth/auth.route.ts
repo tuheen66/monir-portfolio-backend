@@ -26,8 +26,15 @@ authRoute.get('/users', auth(USER_ROLE.admin), AuthControllers.getAllUsers);
 
 authRoute.get(
   '/profile/:userId',
-  auth(USER_ROLE.user),
+  auth(USER_ROLE.customer),
   AuthControllers.userProfile
+);
+
+
+authRoute.patch(
+  '/users/:id',
+  auth(USER_ROLE.customer),
+  AuthControllers.updateUser,
 );
 
 authRoute.patch(
@@ -35,5 +42,6 @@ authRoute.patch(
   auth(USER_ROLE.admin),
   AuthControllers.blockUser,
 );
+
 
 export const AuthRoutes = authRoute;

@@ -5,8 +5,10 @@ import { USER_ROLE } from './user.constant';
 export type TUser = {
   name: string;
   email: string;
+  phone?:string;
+  address?:string;
   password: string;
-  role: 'admin' | 'user';
+  role: 'admin' | 'customer';
   isBlocked: boolean;
 };
 
