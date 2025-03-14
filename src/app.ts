@@ -7,6 +7,7 @@ import notFound from './app/middlewares/notFound';
 
 import { MedicineRoutes } from './app/modules/medicines/medicine.route';
 import { OrderRoutes } from './app/modules/order/order.route';
+import { PaymentRoute } from './app/modules/payments/payment.route';
 
 const app: Application = express();
 
@@ -18,6 +19,7 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use('/api/auth', AuthRoutes);
 app.use('/api/medicine', MedicineRoutes);
 app.use('/api/order', OrderRoutes);
+app.use('/api/payment', PaymentRoute);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({

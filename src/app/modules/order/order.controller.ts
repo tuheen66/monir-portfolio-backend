@@ -112,6 +112,18 @@ const getSingleUserOrders=catchAsync(async(req, res)=>{
   });
 })
 
+const getRevenue = catchAsync(async(req, res) => {
+  const totalRevenue = await OrderService.calculateRevenue();
+  
+ sendResponse(res, {
+   statusCode: StatusCodes.OK,
+   success: true,
+   message: ' Revenue calculated successfully',
+   data: totalRevenue ,
+ });
+
+});
+
 export const OrderController = {
   createOrder,
   createPaymentIntent,
@@ -119,5 +131,6 @@ export const OrderController = {
   getSingleOrder,
   updateOrderStatus,
   getUserOwnOrders,
-  getSingleUserOrders
+  getSingleUserOrders,
+  getRevenue
 };

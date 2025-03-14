@@ -23,5 +23,6 @@ router.get(
   auth(USER_ROLE.admin),
   OrderController.getSingleUserOrders,
 );
+router.get("/revenue/total-revenue", auth(USER_ROLE.admin), OrderController.getRevenue)
 
 export const OrderRoutes = router;

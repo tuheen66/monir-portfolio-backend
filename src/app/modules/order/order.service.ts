@@ -114,6 +114,31 @@ const updateOrderStatus = async (orderId: string, newStatus: string) => {
   }
 };
 
+// import { sendOrderStatusEmail } from "../services/emailService";
+
+// const updateOrderStatus = async (orderId: string, newStatus: 'Pending' | 'Processing' | 'Shipped' | 'Delivered') => {
+//   try {
+//     // Fetch the order to get customer details
+//     const order = await Order.findById(orderId);
+//     if (!order) {
+//       throw new Error("Order not found");
+//     }
+
+//     // Update the order status
+//     order.status = newStatus;
+//     await order.save();
+
+//     // Send an email notification
+//     const emailResponse = await sendOrderStatusEmail(order.customerEmail, orderId, newStatus);
+
+//     return { order, emailStatus: emailResponse.success ? "Email Sent" : "Email Failed" };
+//   } catch (error: any) {
+//     throw new Error(error.message);
+//   }
+// };
+
+// ;
+
 const userOwnOrder = async (token: string, email: string) => {
   try {
     if (!token) {
@@ -147,6 +172,19 @@ const getSingleUserOrders = async (user: string) => {
   return result;
 };
 
+const calculateRevenue = async (): Promise<number> => {
+  const result = await Order.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalRevenue: { $sum: '$finalAmount' },
+      },
+    },
+  ]);
+
+  return result[0]?.totalRevenue || 0;
+};
+
 export const OrderService = {
   createOrder,
   createPaymentIntentService,
@@ -154,5 +192,6 @@ export const OrderService = {
   getSingleOrder,
   updateOrderStatus,
   userOwnOrder,
-  getSingleUserOrders
+  getSingleUserOrders,
+  calculateRevenue,
 };

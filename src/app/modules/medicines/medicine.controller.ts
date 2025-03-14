@@ -1,3 +1,4 @@
+
 import { StatusCodes } from 'http-status-codes';
 import { MedicineServices } from './medicine.service';
 import catchAsync from '../../utils/catchAsync';
@@ -15,13 +16,24 @@ const createMedicine = catchAsync(async (req, res) => {
   });
 });
 
+const featuredMedicines = catchAsync(async (req, res) => {
+  const result = await MedicineServices.featuredMedicines();
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'All Medicines fetched successfully',
+    data: result,
+  });
+});
+
 const getAllMedicines = catchAsync(async (req, res) => {
   const result = await MedicineServices.getAllMedicines();
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: 'All Medicines fetched successfully',
+    message: 'Medicines fetched successfully',
     data: result,
   });
 });
@@ -61,12 +73,13 @@ const deleteMedicine = catchAsync(async (req, res) => {
     message: 'Medicine deleted successfully',
     data: result,
   });
-})
+});
 
 export const MedicineControllers = {
   createMedicine,
   getAllMedicines,
   getSingleMedicine,
   updateMedicine,
-  deleteMedicine
+  deleteMedicine,
+  featuredMedicines,
 };
