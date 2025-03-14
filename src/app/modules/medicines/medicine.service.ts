@@ -11,7 +11,7 @@ const featuredMedicines = async () => {
   return result;
 };
 
-export const getAllMedicines = async () => {
+const getAllMedicines = async () => {
   const medicines = await Medicine.find();
   return medicines;
 };
