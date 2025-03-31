@@ -15,7 +15,7 @@ const createProject = catchAsync(async (req, res) => {
   });
 });
 
-const getAllProjects = catchAsync(async (req, res) => {
+const getAllProject = catchAsync(async (req, res) => {
   const result = await ProjectService.getAllProject();
 
   sendResponse(res, {
@@ -66,7 +66,7 @@ const updateProject = catchAsync(async (req, res) => {
 
 export const ProjectController = {
   createProject,
-  getAllProjects,
+  getAllProject,
   getSingleProject,
   updateProject,
   deleteProject
