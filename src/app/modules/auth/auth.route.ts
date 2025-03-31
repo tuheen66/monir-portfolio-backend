@@ -22,7 +22,9 @@ authRoute.post(
 );
 
 
-authRoute.get('/users', auth(USER_ROLE.admin), AuthControllers.getAllUsers);
+authRoute.get('/user',
+  //  auth(USER_ROLE.admin), 
+   AuthControllers.getAllUsers);
 
 authRoute.get(
   '/profile/:userId',

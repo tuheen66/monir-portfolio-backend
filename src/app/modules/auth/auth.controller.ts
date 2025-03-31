@@ -5,8 +5,8 @@ import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { authServices } from './auth.service';
 import config from '../../config';
-import { JwtPayload } from 'jsonwebtoken';
-import { OrderService } from '../order/order.service';
+
+
 
 const register = catchAsync(async (req, res) => {
   const result = await authServices.register(req.body);
