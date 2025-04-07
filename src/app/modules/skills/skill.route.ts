@@ -8,4 +8,4 @@ router.post('/skills',SkillController.createSkill);
 router.get('/skills', SkillController.getAllSkill);
 
 
-export const ProjectRoutes = router;
+export const SkillRoutes = router;
